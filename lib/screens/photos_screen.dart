@@ -54,7 +54,8 @@ class _PhotosScreenState extends State<PhotosScreen> {
                         Expanded(
                           flex: 1,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 24.0,left: 16,right: 16),
+                            padding: const EdgeInsets.only(
+                                top: 24.0, left: 16, right: 16),
                             child: Text(
                               _photosBloc.photos[index].title!,
                               style: Theme.of(context).textTheme.headline5,

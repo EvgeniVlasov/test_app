@@ -4,6 +4,7 @@ import 'package:flutter_test_app_eclipse/blocs/post_details_bloc.dart';
 import 'package:flutter_test_app_eclipse/widgets/appbar_test_app.dart';
 import 'package:flutter_test_app_eclipse/widgets/comment_widget.dart';
 import 'package:flutter_test_app_eclipse/widgets/current_post_widget.dart';
+import 'package:flutter_test_app_eclipse/widgets/dialog_send_comment_widget.dart';
 
 class PostDetailsScreen extends StatefulWidget {
   const PostDetailsScreen({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
   void didChangeDependencies() {
     _postDetailsBloc = BlocProvider.of<PostDetailsBloc>(context);
     _postDetailsBloc.add(PostDetailsBlocEventGetComments());
+    getCommentsContent();
     super.didChangeDependencies();
   }
 
@@ -35,7 +37,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
               child: CircularProgressIndicator(),
             );
           }
-          getCommentsContent();
           return ListView(
             padding: const EdgeInsets.only(top: 12, left: 16, right: 16),
             children: [
@@ -53,66 +54,22 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
-                                actions: [
-                                  ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                          primary:
-                                              Theme.of(context).primaryColor,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8))),
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 12,
-                                            bottom: 12,
-                                            left: 24,
-                                            right: 25),
-                                        child: Text(
-                                          'Отправить',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .button!
-                                              .copyWith(color: Colors.white),
-                                        ),
-                                      )),
-                                ],
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: TextFormField(
-                                        onChanged: (text) {},
-                                        decoration: const InputDecoration(
-                                          labelText: 'Email',
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: TextFormField(
-                                        onChanged: (text) {},
-                                          decoration: const InputDecoration(
-                                            labelText: 'Имя',
-                                            border: OutlineInputBorder(),
-                                          )
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: TextFormField(
-                                        onChanged: (text) {},
-                                          decoration: const InputDecoration(
-                                            labelText: 'Коментарий',
-                                            border: OutlineInputBorder(),
-                                          )
-                                      ),
-                                    ),
-                                  ],
-                                ));
+                            return DialogSendCommentWidget(
+                              onChangeMail: (String text) {
+                                _postDetailsBloc.fieldInputMail = text;
+                              },
+                              onPress: () {
+                                _postDetailsBloc
+                                    .add(PostDetailsBlocEventSendComment());
+                                Navigator.pop(context);
+                              },
+                              onChangeBody: (String text) {
+                                _postDetailsBloc.fieldInputBody = text;
+                              },
+                              onChangeName: (String text) {
+                                _postDetailsBloc.fieldInputName = text;
+                              },
+                            );
                           });
                     },
                     child: Text(
@@ -126,7 +83,24 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
             ],
           );
         },
-        listener: (BuildContext context, Object state) {},
+        listener: (BuildContext context, Object state) {
+          if (state is PostDetailsBlocStateSendCommentIsSuccess) {
+            List<Widget> yoursComments = [];
+            for (var yourComment in _postDetailsBloc.yourComments) {
+              yoursComments.add(Padding(
+                  padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
+                  child: CommentWidget(
+                    body: yourComment.body!,
+                    email: yourComment.mail!,
+                    name: yourComment.name!,
+                  )));
+            }
+
+            setState(() {
+              contentComments.addAll(yoursComments);
+            });
+          }
+        },
       ),
     );
   }

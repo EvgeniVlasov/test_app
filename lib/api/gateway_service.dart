@@ -5,6 +5,7 @@ import 'package:flutter_test_app_eclipse/api/models/responses/albums_reponse.dar
 import 'package:flutter_test_app_eclipse/api/models/responses/comments_response.dart';
 import 'package:flutter_test_app_eclipse/api/models/responses/photos_response.dart';
 import 'package:flutter_test_app_eclipse/api/models/responses/posts_response.dart';
+import 'package:flutter_test_app_eclipse/api/models/responses/response_send_comment.dart';
 import 'package:flutter_test_app_eclipse/api/models/responses/users_response.dart';
 import 'package:flutter_test_app_eclipse/provides/preference_manager.dart';
 import 'package:http/http.dart' as http;
@@ -56,6 +57,18 @@ class GatewayService {
     var response = await getRequest(path: _methodGetComment);
     PreferenceManager().saveComments(response!.body);
     return CommentsResponse.fromMap(jsonDecode(response.body));
+  }
+
+  Future sendCommentForPost(
+      {required String mail,
+      required String name,
+      required String body,
+      required int idPost}) async {
+    var map = {'mail': mail, 'name': name, 'body': body};
+    var bodyJson = jsonEncode(map);
+    var response = await postRequest(
+        path: _methodGetPosts + '/$idPost' + _methodGetComment, body: bodyJson);
+    return SendCommentResponse.fromMap(jsonDecode(response!.body));
   }
 
   Uri _getUri({required String path, Map<String, dynamic>? params}) {

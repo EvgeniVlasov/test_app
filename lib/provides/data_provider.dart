@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test_app_eclipse/api/api_service.dart';
+import 'package:flutter_test_app_eclipse/api/gateway_service.dart';
 import 'package:flutter_test_app_eclipse/api/models/album.dart';
 import 'package:flutter_test_app_eclipse/api/models/responses/albums_reponse.dart';
 import 'package:flutter_test_app_eclipse/api/models/comment.dart';
@@ -8,6 +8,7 @@ import 'package:flutter_test_app_eclipse/api/models/photo.dart';
 import 'package:flutter_test_app_eclipse/api/models/responses/photos_response.dart';
 import 'package:flutter_test_app_eclipse/api/models/post.dart';
 import 'package:flutter_test_app_eclipse/api/models/responses/posts_response.dart';
+import 'package:flutter_test_app_eclipse/api/models/responses/response_send_comment.dart';
 import 'package:flutter_test_app_eclipse/api/models/user.dart';
 import 'package:flutter_test_app_eclipse/api/models/responses/users_response.dart';
 import 'package:flutter_test_app_eclipse/provides/preference_manager.dart';
@@ -26,11 +27,13 @@ class DataProvider extends ChangeNotifier {
   List<Photo> photosCurrentAlbum = [];
   List<Comment> commentsCurrentPost = [];
   List<Photo> previewPhotoForAlbumsCurrentUser = [];
+  List<SendCommentResponse> yourComments = [];
 
   User currentUser = User();
   Album currentAlbum = Album();
   Post currentPost = Post();
   Comment currentComment = Comment();
+  SendCommentResponse yourComment = SendCommentResponse();
 
   Future getUsers() async {
     if (await PreferenceManager().getUsers() != null) {
@@ -82,6 +85,15 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
+  Future sendComment(
+      {required String mail,
+      required String name,
+      required String body,
+      required int postId}) async {
+    yourComment = await _gatewayService.sendCommentForPost(
+        mail: mail, name: name, body: body, idPost: postId);
+  }
+
   void getCurrentUser(int userId) {
     for (var user in allUsers) {
       if (userId == user.id) {
@@ -117,8 +129,16 @@ class DataProvider extends ChangeNotifier {
 
   void getPreviewAlbumsCurrentUser() {
     previewAlbumsCurrentUser = [];
+    previewPhotoForAlbumsCurrentUser = [];
     for (var i = 0; i < 3; i++) {
       previewAlbumsCurrentUser.add(albumsCurrentUser[i]);
+      for (var photo in allPhotos) {
+        if (photo.albumId == albumsCurrentUser[i].id) {
+          for (int i = 0; i < 1; i++) {
+            previewPhotoForAlbumsCurrentUser.add(photo);
+          }
+        }
+      }
     }
   }
 
@@ -147,11 +167,27 @@ class DataProvider extends ChangeNotifier {
       }
     }
   }
+
   void getCurrentPost(int postId) {
     for (var post in postsCurrentUser) {
       if (post.id == postId) {
         currentPost = post;
       }
+    }
+  }
+
+  getYourComments() {
+    if (yourComments.isNotEmpty) {
+      for (var comment in yourComments) {
+        if (int.parse(comment.postId!) != currentPost.id) {
+          yourComments = [];
+          yourComments.add(yourComment);
+        } else {
+          yourComments.add(yourComment);
+        }
+      }
+    } else {
+      yourComments.add(yourComment);
     }
   }
 

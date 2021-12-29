@@ -16,16 +16,16 @@ class PreferenceManager {
 
   PreferenceManager._internal();
 
-  static const String _USERS_KEY = '_USERS_KEY';
-  static const String _POSTS_KEY = '_POSTS_KEY';
-  static const String _ALBUMS_KEY = '_ALBUMS_KEY';
-  static const String _COMMENTS_KEY = '_COMMENTS_KEY';
-  static const String _PHOTOS_KEY = '_PHOTOS_KEY';
+  static const String _userKey = '_userKey';
+  static const String _postsKey = '_postsKey';
+  static const String _albumsKey = '_albumsKey';
+  static const String _commentsKey = '_commentsKey';
+  static const String _photosKey = '_photosKey';
 
   Future getUsers() async {
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getString(_USERS_KEY) != null) {
-      var usersPref = prefs.getString(_USERS_KEY);
+    if (prefs.getString(_userKey) != null) {
+      var usersPref = prefs.getString(_userKey);
       return UsersResponse.fromMap(jsonDecode(usersPref!));
     }
     return null;
@@ -33,14 +33,14 @@ class PreferenceManager {
 
   Future<bool> saveUsers(String users) async {
     var prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_USERS_KEY, users);
+    await prefs.setString(_userKey, users);
     return true;
   }
 
   Future getPosts() async {
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getString(_POSTS_KEY) != null) {
-      var postsPref = prefs.getString(_POSTS_KEY);
+    if (prefs.getString(_postsKey) != null) {
+      var postsPref = prefs.getString(_postsKey);
       return PostsResponse.fromMap(jsonDecode(postsPref!));
     }
     return null;
@@ -48,14 +48,14 @@ class PreferenceManager {
 
   Future<bool> savePosts(String posts) async {
     var prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_POSTS_KEY, posts);
+    await prefs.setString(_postsKey, posts);
     return true;
   }
 
   Future getAlbums() async {
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getString(_ALBUMS_KEY) != null) {
-      var albumsPref = prefs.getString(_ALBUMS_KEY);
+    if (prefs.getString(_albumsKey) != null) {
+      var albumsPref = prefs.getString(_albumsKey);
       return AlbumsResponse.fromMap(jsonDecode(albumsPref!));
     }
     return null;
@@ -63,14 +63,14 @@ class PreferenceManager {
 
   Future<bool> saveAlbums(String albums) async {
     var prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_ALBUMS_KEY, albums);
+    await prefs.setString(_albumsKey, albums);
     return true;
   }
 
   Future getComments() async {
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getString(_COMMENTS_KEY) != null) {
-      var commentsPref = prefs.getString(_COMMENTS_KEY);
+    if (prefs.getString(_commentsKey) != null) {
+      var commentsPref = prefs.getString(_commentsKey);
       return CommentsResponse.fromMap(jsonDecode(commentsPref!));
     }
     return null;
@@ -78,14 +78,14 @@ class PreferenceManager {
 
   Future<bool> saveComments(String comments) async {
     var prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_COMMENTS_KEY, comments);
+    await prefs.setString(_commentsKey, comments);
     return true;
   }
 
   Future getPhotos() async {
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getString(_PHOTOS_KEY) != null) {
-      var photosPref = prefs.getString(_PHOTOS_KEY);
+    if (prefs.getString(_photosKey) != null) {
+      var photosPref = prefs.getString(_photosKey);
       return PhotosResponse.fromMap(jsonDecode(photosPref!));
     }
     return null;
@@ -93,7 +93,7 @@ class PreferenceManager {
 
   Future<bool> savePhotos(String photos) async {
     var prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_PHOTOS_KEY, photos);
+    await prefs.setString(_photosKey, photos);
     return true;
   }
 }

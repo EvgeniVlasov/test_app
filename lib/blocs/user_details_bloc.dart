@@ -20,15 +20,8 @@ class UserDetailsBlocDataFetchedState extends UserDetailsBlocState {}
 
 class UserDetailsGoAllPostsScreenState extends UserDetailsBlocState {}
 
-class UserDetailsErrorState extends UserDetailsBlocState {
-  final String message;
-
-  UserDetailsErrorState(this.message);
-}
-
 class UserDetailsBloc extends Bloc<UserDetailsBlocEvent, UserDetailsBlocState> {
-  UserDetailsBloc(this._dataProvider)
-      : super(UserDetailsBlocInitialState()) {
+  UserDetailsBloc(this._dataProvider) : super(UserDetailsBlocInitialState()) {
     on<UserDetailsBlocGetDataEvent>((event, emit) async {
       try {
         await _dataProvider.getPosts();
@@ -38,11 +31,9 @@ class UserDetailsBloc extends Bloc<UserDetailsBlocEvent, UserDetailsBlocState> {
         _dataProvider.getPreviewPostCurrentUser();
         _dataProvider.getAlbumsCurrentUser();
         _dataProvider.getPreviewAlbumsCurrentUser();
-
         emit(UserDetailsBlocDataFetchedState());
       } catch (e) {
         debugPrint(e.toString());
-        emit(UserDetailsErrorState('Произошла ошибка, попробуйте еще раз.'));
       }
     });
   }
@@ -56,4 +47,7 @@ class UserDetailsBloc extends Bloc<UserDetailsBlocEvent, UserDetailsBlocState> {
   List<Photo> get photosAlbum => _dataProvider.photosCurrentAlbum;
 
   User get currentUser => _dataProvider.currentUser;
+
+  List<Photo> get previewPhotosForAlbumsCurrentUser =>
+      _dataProvider.previewPhotoForAlbumsCurrentUser;
 }

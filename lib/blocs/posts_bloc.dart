@@ -21,12 +21,6 @@ class UserPostsBlocStateDataFetched extends UserPostsBlocState {}
 
 class UserPostsBlocStateGoScreenPostDetails extends UserPostsBlocState {}
 
-class UserPostsBlocStateError extends UserPostsBlocState {
-  final String message;
-
-  UserPostsBlocStateError(this.message);
-}
-
 class UserPostsBloc extends Bloc<UserPostsBlocEvent, UserPostsBlocState> {
   UserPostsBloc(this._dataProvider) : super(UserPostsBlocInitialState()) {
     on<UserPostsBlocEventGetData>((event, emit) async {
@@ -38,7 +32,6 @@ class UserPostsBloc extends Bloc<UserPostsBlocEvent, UserPostsBlocState> {
         emit(UserPostsBlocStateDataFetched());
       } catch (e) {
         debugPrint(e.toString());
-        emit(UserPostsBlocStateError('Ошибка'));
       }
     });
     on<UserPostsBlocGoPost>((event, emit) {

@@ -38,7 +38,8 @@ class _UsersScreenState extends State<UsersScreen> {
           if (state is UsersBlocStateGoUserDetails) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return BlocProvider(
-               create: (context)=>UserDetailsBloc(context.read<DataProvider>()),
+                create: (context) =>
+                    UserDetailsBloc(context.read<DataProvider>()),
                 child: const UserDetailsScreen(),
               );
             }));

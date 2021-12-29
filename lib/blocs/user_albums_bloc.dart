@@ -21,12 +21,6 @@ class UserAlbumsBlocStateDataFetched extends UserAlbumsBlocState {}
 
 class UserAlbumsBlocStateGoScreenPhotos extends UserAlbumsBlocState {}
 
-class UserAlbumsBlocStateError extends UserAlbumsBlocState {
-  final String message;
-
-  UserAlbumsBlocStateError(this.message);
-}
-
 class UserAlbumsBloc extends Bloc<UserAlbumsBlocEvent, UserAlbumsBlocState> {
   UserAlbumsBloc(this._dataProvider) : super(UserAlbumsBlocInitialState()) {
     on<UserAlbumsBlocEventGetData>((event, emit) async {
@@ -38,8 +32,6 @@ class UserAlbumsBloc extends Bloc<UserAlbumsBlocEvent, UserAlbumsBlocState> {
         emit(UserAlbumsBlocStateDataFetched());
       } catch (e) {
         debugPrint(e.toString());
-        emit(UserAlbumsBlocStateError(
-            'Неудалось загрузить список, попробуйте еще раз.'));
       }
     });
     on<UserAlbumsBlocGoPhotos>((event, emit) {

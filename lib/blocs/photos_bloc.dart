@@ -13,24 +13,17 @@ class PhotosBlocStateInitial extends PhotosBlocState {}
 
 class PhotosBlocStateFetched extends PhotosBlocState {}
 
-class PhotosBlocStateError extends PhotosBlocState {
-  final String message;
-
-  PhotosBlocStateError(this.message);
-}
-
 class PhotosBloc extends Bloc<PhotosBlocEvent, PhotosBlocState> {
   PhotosBloc(this._dataProvider) : super(PhotosBlocStateInitial()) {
-    on<PhotosBlocEventGetPhoto>((event, emit) async{
+    on<PhotosBlocEventGetPhoto>((event, emit) async {
       try {
-        if(photos.isEmpty){
+        if (photos.isEmpty) {
           await _dataProvider.getPhotos();
         }
         _dataProvider.getPhotosCurrentAlbum();
         emit(PhotosBlocStateFetched());
       } catch (e) {
         debugPrint(e.toString());
-        emit(PhotosBlocStateError('Произошла ошибка'));
       }
     });
   }
